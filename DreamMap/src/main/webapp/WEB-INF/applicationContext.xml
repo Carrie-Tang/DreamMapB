@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+    <!-- Spring Basic Configure Start -->
+    <!-- Automatically Load Properties -->
+    <context:property-placeholder ignore-unresolvable="true" location="classpath*:properties/*.properties" />
+    <!-- Automatically Scan Dependency -->
+    <context:component-scan base-package="com.dreammap.*" />
+    <!--
+    <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    -->
+    <context:annotation-config />
+    <context:spring-configured />
+    <!-- Automatically Load Bean End -->
+    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
+    <!-- Spring Basic Configure End -->
+
+    <!-- AOP Configure Start -->
+    <!-- AOP Switch -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <!-- AOP Manage Response -->
+    <bean id="response" class="com.dreammap.arch.aspect.DmResponseAspect" />
+    <aop:config>
+        <aop:aspect ref="response">
+            <aop:pointcut id="ResFilter" expression="execution(* com.dreammap.ws.controller.*.*(..))" />
+            <aop:around pointcut-ref="ResFilter" method="parseResultToJson" />
+        </aop:aspect>
+    </aop:config>
+    <!-- AOP Configure End -->
+
+    <!-- Database Configure Start -->
+    <!-- MySQL Data Source Start -->
+    <bean id="mainDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://120.25.146.113:3306/hw_map" />
+        <property name="username" value="dba_lcy" />
+        <property name="password" value="passw0rd" />
+    </bean>
+    <!-- MySQL Data Source End-->
+
+    <!-- MyBatis Mapper XML Start -->
+    <bean id="mainSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="mainDataSource"/>
+    </bean>
+    <!-- MyBatis Mapper XML End -->
+
+    <!-- MyBatis Mapper Interface Start -->
+    <bean id="mainMapper" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.dreammap.ws.service.data"/>
+        <property name="sqlSessionFactoryBeanName" value="mainSqlSessionFactory"/>
+    </bean>
+    <!-- MyBatis Mapper Interface End -->
+
+    <!-- Transactions Configure Start -->
+    <!-- Transaction manager for main JDBC DataSource Start -->
+    <!-- NOTICE
+        org.mybatis.spring.SqlSessionFactoryBean and org.springframework.jdbc.datasource.DataSourceTransactionManager
+     must refer the same dataSource. And mybatis will join into the TX management of Spring automatically.
+     -->
+    <bean id="mainTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="mainDataSource"/>
+    </bean>
+    <!-- Transaction manager for main JDBC DataSource End -->
+
+    <!-- Transaction by Annotation Start -->
+    <!-- @Transactional
+        This annotation must be used at public method of class.
+        value                   String;             tx manager, default "", must be set
+        propagation             enums: Propagation;  tx propagation level, usually REQUIRED, REQUIRES_NEW, SUPPORTS
+        isolation               enums: Isolation;    tx isolation level,
+        readOnly                boolean;            tx is read only or not, default false
+        timeout                 int (in seconds);   tx can timeout, default -1
+        rollbackFor             Class[];            extends Throwable
+        rollbackForClassName 	ClassName[];        extends Throwable, String
+        noRollbackFor           Class               extends Throwable
+        noRollbackForClassName  ClassName[];        extends Throwable, String
+     -->
+    <tx:annotation-driven transaction-manager="mainTransactionManager"/>
+    <!-- Transaction by Annotation End -->
+    <!-- Transactions Configure End -->
+    <!-- Database Configure End -->
+</beans>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="EmuService_Arch"
+         version="2.5">
+  <display-name>DreamMap</display-name>
+
+  <!-- Welcome-file-list Start -->
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  <!-- Welcome-file-list End -->
+
+  <!-- Context Start -->
+  <!--
+   Comment a line in <param-value> to delete that config.
+   Uncomment it to use the config.
+  -->
+  <!-- Context End -->
+
+  <!-- Listener Start -->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
+  <!-- Listener End -->
+
+  <!-- Filter Start -->
+  <filter>
+    <filter-name>SpringEncodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <!-- Filter End -->
+
+  <!-- Filter-mapping Start -->
+  <filter-mapping>
+    <filter-name>SpringEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <!-- Filter-mapping End -->
+
+  <!-- Servlet Start -->
+  <servlet>
+    <servlet-name>jersey-servlet</servlet-name>
+    <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
+    <init-param>
+      <param-name>com.sun.jersey.config.property.packages</param-name>
+      <param-value>com.dreammap.ws.controller</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <!-- Servlet End -->
+
+  <!-- Servlet-mapping Start -->
+  <servlet-mapping>
+    <servlet-name>jersey-servlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+  <!-- Servlet-mapping End -->
+</web-app>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- QUARTZ Configure Start-->
+    <!-- MbExampleJob Start -->
+    <!-- Example One - Start
+     Sprint DI failed by JobDetailBean
+    <bean name="exampleJobBean" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="com.emulian.ws.controller.base.job.MbExampleQuartzJobController" />
+        <property name="durability" value="true"/>
+        <property name="requestsRecovery" value="true"/>
+    </bean>
+    <bean id="exampleCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="exampleJobBean" />
+        <property name="cronExpression" value="0/7 * * * * ?" />
+        <property name="timeZone">
+            <value>GMT+8:00</value>
+        </property>
+    </bean>
+    <bean lazy-init="false" id="exampleSchedulerFactoryQuartzBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="schedulerName" value="exampleCronScheduler" />
+        <property name="jobDetails">
+            <list>
+                <ref bean="exampleJobBean" />
+            </list>
+        </property>
+        <property name="triggers">
+            <list>
+                <ref bean="exampleCronTrigger" />
+            </list>
+        </property>
+        <property name="autoStartup">
+            <value>true</value>
+        </property>
+    </bean>
+    -->
+    <!-- Example One - End -->
+    <!-- Example Two - Start
+    <bean id ="mbExampleJobBean" class="com.emulian.ws.controller.base.job.MbExampleJobController" />
+    <bean id="exampleJobDetailFactory" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="mbExampleJobBean" />
+        <property name="targetMethod" value="start" />
+        <property name="concurrent" value="true"/>
+    </bean>
+    <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="exampleJobDetailFactory" />
+        <property name="cronExpression" value="0/9 * * * * ?" />
+        <property name="timeZone">
+            <value>GMT+8:00</value>
+        </property>
+    </bean>
+    <bean lazy-init="false" id="exampleSchedulerFactoryBean"  class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="schedulerName" value="exampleCronScheduler" />
+        <property name="jobDetails">
+            <list>
+                <ref bean="exampleJobDetailFactory" />
+            </list>
+        </property>
+        <property name="triggers">
+            <list>
+                <ref bean="cronTrigger" />
+            </list>
+        </property>
+        <property name="autoStartup">
+            <value>true</value>
+        </property>
+    </bean>
+    -->
+    <!-- Example Two - End -->
+    <!-- MbExampleJob End -->
+
+    <!-- Mb***Job Start -->
+        <!-- config a new job here -->
+    <!-- Mb***Job End -->
+
+    <!-- MbMQRedPointJob Start -->
+    <bean id ="mbRedPointJobBean" class="com.emulian.ws.controller.base.job.MbRedPointJobController" />
+    <bean id="redPointJobDetailFactory" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="mbRedPointJobBean" />
+        <property name="targetMethod" value="start" />
+        <property name="concurrent" value="true"/>
+    </bean>
+    <bean id="RPCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="redPointJobDetailFactory" />
+        <property name="cronExpression" value="0/3 * * * * ?" />
+        <property name="timeZone">
+            <value>GMT+8:00</value>
+        </property>
+    </bean>
+    <bean lazy-init="false" id="RPSchedulerFactoryBean"  class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="schedulerName" value="RPCronScheduler" />
+        <property name="jobDetails">
+            <list>
+                <ref bean="redPointJobDetailFactory" />
+            </list>
+        </property>
+        <property name="triggers">
+            <list>
+                <ref bean="RPCronTrigger" />
+            </list>
+        </property>
+        <property name="autoStartup">
+            <value>true</value>
+        </property>
+    </bean>
+    <!-- MbMQRedPointJob End -->
+    <!-- QUARTZ Configure End-->
+</beans>
